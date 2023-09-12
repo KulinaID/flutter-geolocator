@@ -19,6 +19,7 @@ import java.util.List;
 
 public class PermissionUtils {
 
+  @SuppressWarnings("deprecation")
   public static boolean hasPermissionInManifest(Context context, String permission) {
     try {
       PackageInfo info =
