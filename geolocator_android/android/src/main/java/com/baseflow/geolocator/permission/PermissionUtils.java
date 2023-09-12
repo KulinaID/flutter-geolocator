@@ -19,13 +19,9 @@ import java.util.List;
 
 public class PermissionUtils {
 
-  @SuppressWarnings("deprecation")
   public static boolean hasPermissionInManifest(Context context, String permission) {
     try {
-      PackageInfo info =
-          context
-              .getPackageManager()
-              .getPackageInfo(context.getPackageName(), PackageManager.GET_PERMISSIONS);
+      PackageInfo info = getPackageInfo(context);
       if (info.requestedPermissions != null) {
         for (String p : info.requestedPermissions) {
           if (p.equals(permission)) {
@@ -38,5 +34,19 @@ public class PermissionUtils {
     }
 
     return false;
+  }
+
+  
+  @SuppressWarnings("deprecation")
+  private static PackageInfo getPackageInfo(Context context) throws PackageManager.NameNotFoundException {
+    final PackageManager packageManager = context.getPackageManager();
+    final String packageName = context.getPackageName();
+
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+      return packageManager.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS);
+    }
+    
+    return packageManager.getPackageInfo(packageName,
+        PackageManager.PackageInfoFlags.of(PackageManager.GET_PERMISSIONS));
   }
 }
